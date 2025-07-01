@@ -8,9 +8,6 @@ def get_mask_card_number(card_number: str) -> str:
     return masked
 
 
-print(get_mask_card_number("7000792289606361"))
-
-
 def get_mask_account(account_number: str) -> str:
     """Маскирует номер счёта, оставляя последние 4 цифры."""
     cleaned_number = account_number.replace(" ", "")
@@ -19,6 +16,3 @@ def get_mask_account(account_number: str) -> str:
     # Форматируем номер счёта
     masked = f"**{cleaned_number[-4:]}"
     return masked
-
-
-print(get_mask_account("73654108430135874305"))
