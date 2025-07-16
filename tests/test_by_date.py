@@ -1,7 +1,5 @@
 from typing import Any, Dict, List
 
-import pytest
-
 from src.processing import sort_by_date
 
 # Тестовые данные

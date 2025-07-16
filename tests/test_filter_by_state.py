@@ -2,8 +2,6 @@ from typing import Any, Dict, List
 
 import pytest
 
-from src.processing import filter_by_state
-
 
 @pytest.fixture
 def sample_operations() -> List[Dict[str, Any]]:
