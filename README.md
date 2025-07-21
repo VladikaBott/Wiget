@@ -5,41 +5,85 @@
 
 ## Установка и запуск
 Установка не требуется.
-Запуск производится через файл main.py или файлы src/masks.py, src/widget.py, src/processing.py.
+Запуск производится через файлы src/masks.py, src/widget.py, src/processing.py.
 
 ## Авторы
 Проект разрабатывается в процессе освоения образовательной программы Skypro.
 
 
-## Пример работы алгоритма
-### Маскировка данных карты пользователя
-Ввод: masks.get_mask_card_number(7000792289606361)
-Вывод: "7000 79** **** 6361"
-### Маскировка данных счета пользователя
-Ввод: masks.get_mask_account(73654108430135874305)
-Вывод: "**4305"
-### Маскировка данных пользователя
-Ввод 1: widget.mask_account_card("Visa Platinum 7000792289606361")
-Вывод 1: "Visa Platinum 7000 79** **** 6361"
-Ввод 2: widget.mask_account_card("Счет 73654108430135874305")
-Вывод 2: "Счет **4305"
-### Преобразование даты
-Ввод: widget.get_date("2024-03-11T02:26:18.671407")
-Вывод: "11.03.2024"
-### Сортировка по ключу статуса
+
+# Модуль generators
+
+Модуль содержит генераторы для обработки финансовых данных.
+
+## Функции
+
+### 1. `filter_by_currency(transactions, currency)`
+Фильтрует транзакции по заданной валюте.
+
+**Параметры:**
+- `transactions` - список транзакций (словарей)
+- `currency` - код валюты (например, "USD")
+
+**Возвращает:**
+- Итератор по транзакциям с указанной валютой
+
+# Модуль masks
+
+Модуль содержит функции для маскирования номеров банковских карт и счетов.
+
+## Функции
+
+### `get_mask_card_number(card_number: str) -> str`
+Маскирует номер банковской карты, оставляя первые 6 и последние 4 цифры.
+
+**Параметры:**
+- `card_number` - строка с номером карты (16 цифр, может содержать пробелы)
+
+**Возвращает:**
+- Маскированный номер в формате `XXXX XX** **** XXXX`
+
+**Исключения:**
+- `ValueError` - если номер не содержит 16 цифр
+
+**Пример использования:**
+```python
+from masks import get_mask_card_number
+
+masked_card = get_mask_card_number("1234567890123456")
+print(masked_card)  # "1234 56** **** 3456"
+
+masked_card = get_mask_card_number("1234 5678 9012 3456")
+print(masked_card)  # "1234 56** **** 3456"
+
+# Модуль processing
+
+Модуль содержит функции для обработки банковских операций.
+
+## Функции
+
+### `filter_by_state(operations: list[dict], state: str = "EXECUTED") -> list[dict]`
+Фильтрует список операций по статусу.
+
+**Параметры:**
+- `operations` - список операций (словарей)
+- `state` - статус для фильтрации (по умолчанию "EXECUTED")
+
+**Возвращает:**
+- Список операций с указанным статусом
+
+**Пример использования:**
+```python
+from processing import filter_by_state
+
 operations = [
-            {"id": 41428829, "state": "EXECUTED", "date": "2019-07-03T18:35:29.512364"},
-            {"id": 939719570, "state": "EXECUTED", "date": "2018-06-30T02:08:58.425572"},
-            {"id": 594226727, "state": "CANCELED", "date": "2018-09-12T21:27:25.241689"},
-            {"id": 615064591, "state": "CANCELED", "date": "2018-10-14T08:21:33.419441"},
-        ]
-Ввод 1: processing.filter_by_state(doperations)
-Вывод 1: [
-            {"id": 41428829, "state": "EXECUTED", "date": "2019-07-03T18:35:29.512364"},
-            {"id": 939719570, "state": "EXECUTED", "date": "2018-06-30T02:08:58.425572"},
-        ]
-Ввод 2: processing.filter_by_state(operations, state="CANCELED")
-Вывод 2: [
-            {"id": 594226727, "state": "CANCELED", "date": "2018-09-12T21:27:25.241689"},
-            {"id": 615064591, "state": "CANCELED", "date": "2018-10-14T08:21:33.419441"},
-        ]
+    {"id": 1, "state": "EXECUTED"},
+    {"id": 2, "state": "PENDING"},
+    {"id": 3, "state": "EXECUTED"}
+]
+
+executed_ops = filter_by_state(operations)
+print(executed_ops)  # [{"id": 1, "state": "EXECUTED"}, {"id": 3, "state": "EXECUTED"}]
+
+pending_ops = filter_by_state(operations, "PENDING")
+print(pending_ops)  # [{"id": 2, "state": "PENDING"}]
