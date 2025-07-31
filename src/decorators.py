@@ -3,6 +3,24 @@ from functools import wraps
 
 
 def log(filename=None):
+    """
+    Декоратор для логирования вызовов функций, их результатов и ошибок.
+
+    Логи могут записываться в файл или выводиться в консоль.
+
+    Примеры использования:
+        1. Логи в консоль:
+        @log()
+        def add(a, b):
+            return a + b
+        add(2, 3)
+
+        2. Логи в файл:
+        @log("operations.log")
+        def divide(a, b):
+            return a / b
+        divide(10, 2)
+    """
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -17,7 +35,6 @@ def log(filename=None):
 
             try:
                 result = func(*args, **kwargs)
-                # Добавляем repr() для сохранения кавычек в строковых результатах
                 success_msg = f"{timestamp} - {func.__name__} returned {repr(result)}\n"
 
                 if filename:
