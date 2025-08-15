@@ -1,19 +1,39 @@
+from logger import setup_logger
+
+logger = setup_logger("masks", "masks")
+
+
 def get_mask_card_number(card_number: str) -> str:
-    """Маскирует номер карты, оставляя первые 6 и последние 4 цифры."""
-    cleaned_number = card_number.replace(" ", "")
-    if len(cleaned_number) != 16:
-        raise ValueError("Номер карты должен содержать 16 цифр")
-    # Форматируем номер карты
-    masked = f"{cleaned_number[:4]} {cleaned_number[4:6]}** **** {cleaned_number[-4:]}"
-    return masked
+    """Маскирует номер карты."""
+    try:
+        cleaned_number = card_number.replace(" ", "")
+        if len(cleaned_number) != 16:
+            error_msg = f"Некорректная длина номера: {len(cleaned_number)}"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
+        masked = f"{cleaned_number[:4]} {cleaned_number[4:6]}** **** {cleaned_number[-4:]}"
+        logger.info(f"Успешно замаскирована карта: {masked}")
+        return masked
+
+    except Exception as e:
+        logger.exception(f"Ошибка маскирования карты: {str(e)}")
+        raise
 
 
 def get_mask_account(account_number: str) -> str:
-    """Маскирует номер счёта, оставляя последние 4 цифры."""
-    cleaned_number = account_number.replace(" ", "")
-    if len(cleaned_number) < 4:
-        raise ValueError("Номер счёта должен содержать как минимум 4 цифры")
-    # Форматируем номер счёта
-    masked = f"**{cleaned_number[-4:]}"
-    return masked
+    """Маскирует номер счёта."""
+    try:
+        cleaned_number = account_number.replace(" ", "")
+        if len(cleaned_number) < 4:
+            error_msg = f"Слишком короткий номер: {len(cleaned_number)}"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
 
+        masked = f"**{cleaned_number[-4:]}"
+        logger.info(f"Успешно замаскирован счёт: {masked}")
+        return masked
+
+    except Exception as e:
+        logger.exception(f"Ошибка маскирования счёта: {str(e)}")
+        raise
