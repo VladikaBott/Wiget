@@ -24,8 +24,6 @@ def get_amount_in_rub(transaction):
     if currency == 'RUB':
         return amount
 
-    if currency not in ['USD', 'EUR']:
-        return 0.0
 
     api_key = os.getenv('EXCHANGE_RATE_API_KEY')
     if not api_key:

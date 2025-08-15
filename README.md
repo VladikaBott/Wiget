@@ -140,3 +140,7 @@ def log(filename=None, level="INFO", ignore_exceptions=None):
 
         return wrapper
     return decorator
+    
+    
+# Модуль external_api.py
+## Cкопируй .env.template в .env. 
