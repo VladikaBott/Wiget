@@ -1,36 +1,29 @@
-import random
 import json
+import random
 
 
-def generate_users(first_names, last_names, cities):
-    """Генератор случайный пользователей
-
-    Аргументы:
-         first_names - список имен
-         last_names - список фамилий
-         cities - список городов
-
-     Возвращает:
-         Генератор, который выдает словари с данными пользователей:
-         {
-             "first_name": случайное имя,
-             "last_name": случайная фамилия,
-             "age": случайный возраст (18-65),
-             "city": случайный город
-         }
-     """
+def generator_users(first_names: list[str], last_names: list[str], cities:list[str]) -> dict:
+    """Функция которая генерирует пользователей в json формате"""
     while True:
-        yield {
-            'first_name': random.choice(first_names),
-            'last_name': random.choice(last_names),
-            'age': random.randint(18, 65),
+        user = {
+            'first_name' : random.choice(first_names),
+            'last_name' : random.choice(last_names),
+            'age' : random.randint(18,56),
             'city': random.choice(cities)
         }
-if __name__ == "__main__":
-    first_names = ['Василий', 'rosa', 'genad']
-    last_names = ['gandon', 'xuesos']
-    cities = ['moscow', 'novosib']
+        yield user
 
-    user_gen = generate_users(first_names, last_names, cities)
-    user = [next(user_gen) for i in range(5)]
-    print(json.dumps(user, indent=2, ensure_ascii=False))
+if __name__ == '__main__':
+    cities = ['Moscow', 'Piter', 'Kazan', 'Barnaul']
+    last_names = ['Bott', 'Gan', 'For']
+    first_names = ['Vova', 'Dima', 'Antonio']
+
+    users = generator_users(first_names, last_names, cities)
+    user_group = [next(users) for i in range(3)]
+    user_group_2 = [next(users) for i in range(6)]
+    print("1 Группа")
+    print(json.dumps(user_group))
+    print(type(user_group))
+    print("2 Группа")
+    print(json.dumps(user_group_2))
+    print(type(user_group_2))
