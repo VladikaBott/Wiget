@@ -1,9 +1,7 @@
-# utils.py
 import json
 import os
-from pathlib import Path
 
-from logger import setup_logger
+from src.logger import setup_logger
 
 logger = setup_logger("utils", "utils")  # Файл: logs/utils.log в корне проекта
 
@@ -25,11 +23,11 @@ def load_transactions(file_path: str) -> list[dict]:
             logger.info(f"Успешно загружено {len(result)} транзакций")
             return result
 
-    except json.JSONDecodeError as e:
-        logger.error(f"Ошибка декодирования JSON: {str(e)}")
     except PermissionError as e:
         logger.error(f"Нет доступа к файлу: {str(e)}")
-    except OSError as e:
+    except json.JSONDecodeError as e:
+        logger.error(f"Ошибка декодирования JSON: {str(e)}")
+    except OSError as e:  # Общий обработчик для других ошибок файловой системы
         logger.error(f"Ошибка файловой системы: {str(e)}")
     except Exception as e:
         logger.exception(f"Неизвестная ошибка: {str(e)}")

@@ -10,11 +10,6 @@ def get_amount_in_rub(transaction):
     """
     Конвертирует сумму транзакции в рубли
 
-    Args:
-        transaction: Словарь с данными транзакции
-
-    Returns:
-        float: Сумма в рублях (0.0 при ошибках)
     """
     if not transaction or "operationAmount" not in transaction:
         return 0.0
