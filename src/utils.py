@@ -2,8 +2,8 @@
 import json
 import os
 from pathlib import Path
-from logger import setup_logger
 
+from logger import setup_logger
 
 logger = setup_logger("utils", "utils")  # Файл: logs/utils.log в корне проекта
 

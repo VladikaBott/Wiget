@@ -21,6 +21,7 @@ def log(filename=None):
             return a / b
         divide(10, 2)
     """
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
