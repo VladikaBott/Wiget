@@ -1,5 +1,4 @@
 import logging
-import os
 from pathlib import Path
 
 
@@ -14,16 +13,10 @@ def setup_logger(name: str, log_file: str) -> logging.Logger:
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter(
-        "%(asctime)s | %(name)s | %(levelname)s | %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S"
-    )
+    formatter = logging.Formatter("%(asctime)s | %(name)s | %(levelname)s | %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
 
-    file_handler = logging.FileHandler(
-        filename=logs_dir / f"{log_file}.log",
-        mode="w",
-        encoding="utf-8"
-    )
+    log_filepath = logs_dir / f"{log_file}.log"
+    file_handler = logging.FileHandler(filename=log_filepath, mode="w", encoding="utf-8")
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 

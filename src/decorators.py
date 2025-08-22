@@ -21,6 +21,7 @@ def log(filename=None):
             return a / b
         divide(10, 2)
     """
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -46,7 +47,10 @@ def log(filename=None):
                 return result
 
             except Exception as e:
-                error_msg = f"{timestamp} - {func.__name__} raised {type(e).__name__}: {str(e)}. Input: args={args}, kwargs={kwargs}\n"
+                error_msg = (
+                    f"{timestamp} - {func.__name__} raised {type(e).__name__}: "
+                    f"{str(e)}. Input: args={args}, kwargs={kwargs}\n"
+                )
 
                 if filename:
                     with open(filename, "a") as f:
