@@ -1,146 +1,105 @@
-# BankingWidget
+# 🏦 Banking Widget
 
-## Описание
-Учебный проект "Банковский виджет"
+Профессиональный инструмент для обработки банковских операций с поддержкой JSON, CSV и Excel форматов.
 
-## Установка и запуск
-Установка не требуется.
-Запуск производится через файлы src/masks.py, src/widget.py, src/processing.py.
+## 📦 Основные модули
 
-## Авторы
-Проект разрабатывается в процессе освоения образовательной программы Skypro.
-
-
-
-# Модуль generators
-
-Модуль содержит генераторы для обработки финансовых данных.
-
-## Функции
-
-### 1. `filter_by_currency(transactions, currency)`
-Фильтрует транзакции по заданной валюте.
-
-**Параметры:**
-- `transactions` - список транзакций (словарей)
-- `currency` - код валюты (например, "USD")
-
-**Возвращает:**
-- Итератор по транзакциям с указанной валютой
-
-# Модуль masks
-
-Модуль содержит функции для маскирования номеров банковских карт и счетов.
-
-## Функции
-
-### `get_mask_card_number(card_number: str) -> str`
-Маскирует номер банковской карты, оставляя первые 6 и последние 4 цифры.
-
-**Параметры:**
-- `card_number` - строка с номером карты (16 цифр, может содержать пробелы)
-
-**Возвращает:**
-- Маскированный номер в формате `XXXX XX** **** XXXX`
-
-**Исключения:**
-- `ValueError` - если номер не содержит 16 цифр
-
-**Пример использования:**
+### 🔒 masks.py
 ```python
-from masks import get_mask_card_number
-
-masked_card = get_mask_card_number("1234567890123456")
-print(masked_card)  # "1234 56** **** 3456"
-
-masked_card = get_mask_card_number("1234 5678 9012 3456")
-print(masked_card)  # "1234 56** **** 3456"
-
-# Модуль processing
-
-Модуль содержит функции для обработки банковских операций.
-
-## Функции
-
-### `filter_by_state(operations: list[dict], state: str = "EXECUTED") -> list[dict]`
-Фильтрует список операций по статусу.
-
-**Параметры:**
-- `operations` - список операций (словарей)
-- `state` - статус для фильтрации (по умолчанию "EXECUTED")
-
-**Возвращает:**
-- Список операций с указанным статусом
-
-**Пример использования:**
+def get_mask_card_number(card_number: str) -> str:
+    """1234567890123456 → 1234 56** **** 3456"""
+def get_mask_account(account_number: str) -> str:
+    """12345678901234567890 → **7890"""
+```
+### 📦 utils.py (Базовые утилиты)
 ```python
-from processing import filter_by_state
+def load_transactions(file_path: str) -> list[dict]:
+    """
+    Универсальный загрузчик транзакций
+    Поддерживает:
+    - JSON (оригинальный формат)
+    - CSV (через pandas)
+    - Excel (через pandas)
+    """
+```
+### 🎛 widget.py
+```python
+def mask_account_card(info: str) -> str:
+    """Visa 1234567890123456 → Visa 1234 56** **** 3456"""
+def get_date(date_str: str) -> str:
+    """2023-05-20T12:30:00 → 20.05.2023"""
+```
 
-operations = [
-    {"id": 1, "state": "EXECUTED"},
-    {"id": 2, "state": "PENDING"},
-    {"id": 3, "state": "EXECUTED"}
-]
+### 🔄 processing.py
+```python
+def filter_by_state(operations: list[dict], state: str = "EXECUTED") -> list[dict]:
+    """Фильтрация по статусу (EXECUTED/CANCELED)"""
+def sort_by_date(transactions: list[dict], reverse: bool = True) -> list[dict]:
+    """Сортировка по дате (по умолчанию - новые сначала)"""
+```
+### 📝 logger.py
+```python
+def setup_logger(name: str, log_file: str) -> logging.Logger:
+    """Настройка системы логирования"""
+```
+### 🌐 external_api.py
+```python
+def get_amount_in_rub(transaction: dict) -> float:
+    """Конвертация суммы в рубли через API"""
+```
+### 📁 file_processor.py
+```python
+def load_csv_transactions(file_path: str) -> list[dict]:
+    """Загрузка данных из CSV"""
+def load_excel_transactions(file_path: str) -> list[dict]:
+    """Загрузка данных из Excel"""
+```
+### 🎀 decorators.py
+```python
+@log(filename=None)
+def func(*args, **kwargs):
+    """Декоратор для логирования вызовов"""
+```    
+### ♻️ generators.py
+```python
+def filter_by_currency(transactions, currency) -> Iterator[dict]:
+    """Фильтр транзакций по валюте"""
+def card_number_generator(start, end) -> Iterator[str]:
+    """Генератор номеров карт 0000...0001 до 0000...9999"""
+```
+### 🚀 Быстрый старт
+### Установите зависимости:
 
-executed_ops = filter_by_state(operations)
-print(executed_ops)  # [{"id": 1, "state": "EXECUTED"}, {"id": 3, "state": "EXECUTED"}]
-
-pending_ops = filter_by_state(operations, "PENDING")
-print(pending_ops)  # [{"id": 2, "state": "PENDING"}]
-
-## Логирующий декоратор для Python
-
-## Установка
-Просто скопируйте этот код в файл `decorators.py`:
+```bash
+pip install pandas openpyxl python-dotenv requests
+```
+### Пример использования:
 
 ```python
-from functools import wraps
-from datetime import datetime
+from src.widget import mask_account_card
+from src.processing import sort_by_date
 
-def log(filename=None, level="INFO", ignore_exceptions=None):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # Форматирование сообщения
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            call_msg = f"{timestamp} [{level}] {func.__name__} - Called with args={args}, kwargs={kwargs}"
-            
-            try:
-                # Вывод/запись лога вызова
-                if filename:
-                    with open(filename, 'a') as f:
-                        f.write(call_msg + "\n")
-                else:
-                    print(call_msg)
-                
-                result = func(*args, **kwargs)
-                
-                # Лог успешного выполнения
-                success_msg = f"{timestamp} [{level}] {func.__name__} - Returned: {result}"
-                if filename:
-                    with open(filename, 'a') as f:
-                        f.write(success_msg + "\n")
-                else:
-                    print(success_msg)
-                
-                return result
-            
-            except Exception as e:
-                if ignore_exceptions and type(e) in ignore_exceptions:
-                    raise
-                
-                # Лог ошибки
-                error_msg = f"{timestamp} [ERROR] {func.__name__} - Raised {type(e).__name__}: {str(e)}"
-                if filename:
-                    with open(filename, 'a') as f:
-                        f.write(error_msg + "\n")
-                else:
-                    print(error_msg)
-                raise
+print(mask_account_card("Счет 12345678901234567890"))  # → "Счет **7890"
+transactions = sort_by_date(load_csv_transactions("data.csv"))
+```
+### 📊 Особенности
+* Поддержка JSON/CSV/Excel форматов
 
-        return wrapper
-    return decorator
-    
-    
-# Модуль external_api.py
-## Cкопируй .env.template в .env. 
+* Конвертация валют через API
+
+* Детальное логирование операций
+
+* Генераторы для потоковой обработки
+
+* Полная аннотация типов
+
+### 📝 Логирование
+### Все операции записываются в папку logs/:
+
+* masks.log - маскирование данных
+
+* widget.log - форматирование вывода
+
+* processing.log - фильтрация и сортировка
+### 🌐 Внешние зависимости
+* Конвертация валют через exchangeratesapi.io
